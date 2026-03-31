@@ -85,7 +85,16 @@ with col2:
     year_end   = st.number_input("To year",   min_value=1926, max_value=2025, value=2025, step=1)
 with col3:
     step = st.selectbox("Step (every N years)", options=[1, 2, 5, 10], index=2)
-    fps  = st.slider("Frames per second", min_value=1, max_value=10, value=2)
+    fps_options = {
+        "¼ fps  (4 s / frame)": 0.25,
+        "½ fps  (2 s / frame)": 0.5,
+        "1 fps  (1 s / frame)": 1,
+        "2 fps  (0.5 s / frame)": 2,
+        "5 fps  (0.2 s / frame)": 5,
+        "10 fps (0.1 s / frame)": 10,
+    }
+    fps_label = st.selectbox("Speed", options=list(fps_options.keys()), index=2)
+    fps = fps_options[fps_label]
     size = st.selectbox("Image size (pixels)", options=[512, 1024, 2048], index=1)
 
 # ── Step 3: Run ───────────────────────────────────────────────────────────────
@@ -128,7 +137,7 @@ if st.button("Run", type="primary"):
     make_gif(downloaded, out_gif, fps=fps, loop=0)
     status_text.text("Done!")
 
-    st.success(f"Timelapse ready — {len(downloaded)} frames at {fps} fps")
+    st.success(f"Timelapse ready — {len(downloaded)} frames at {fps_label}")
 
     with open(out_gif, "rb") as f:
         gif_bytes = f.read()
